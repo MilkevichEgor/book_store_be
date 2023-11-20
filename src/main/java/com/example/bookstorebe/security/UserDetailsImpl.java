@@ -6,7 +6,6 @@ import com.example.bookstorebe.models.entity.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,11 +32,8 @@ public class UserDetailsImpl implements UserDetails {
     private String avatar;
     private List<Rating> ratings;
     private List<Book> favorites;
-
     @JsonIgnore
     private Collection<? extends GrantedAuthority> authorities;
-
-    @Getter
     private User.UserRole role;
 
     public UserDetailsImpl(Integer id, String name, String email, String password,

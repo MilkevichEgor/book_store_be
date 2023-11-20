@@ -1,27 +1,21 @@
 package com.example.bookstorebe.security.response;
 
 import com.example.bookstorebe.DTO.UserResponse;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
 public class JwtResponse {
 
-    @Getter
     private final UserResponse user;
 
-    @Getter
     private String token;
 
-    @Getter
     private String refreshToken;
 
-    @Getter
     private String message;
-
-    public JwtResponse(UserResponse user, String token, String refreshToken, String message) {
-        this.user = user;
-        this.token = token;
-        this.refreshToken = refreshToken;
-        this.message = message;
-    }
 
 }

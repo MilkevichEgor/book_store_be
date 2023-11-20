@@ -59,7 +59,6 @@ public class Book {
         this.isInFavorite = b;
     }
 
-    @Getter
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "book_genres_genre",
@@ -77,7 +76,6 @@ public class Book {
     @OneToMany(mappedBy = "book")
     @JsonManagedReference
     private List<Comment> comments;
-
 
     @OneToMany(mappedBy = "book")
     private List<Rating> ratings;
@@ -103,9 +101,9 @@ public class Book {
         this.users.add(user);
     }
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-    }
+//    public void addComment(Comment comment) {
+//        this.comments.add(comment);
+//    }
 
     public Boolean isInFavorite() {
 //        return isInFavorite;

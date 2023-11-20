@@ -2,26 +2,15 @@ package com.example.bookstorebe.service;
 
 import com.example.bookstorebe.DTO.BookResponse;
 import com.example.bookstorebe.models.entity.Book;
-import com.example.bookstorebe.models.entity.Genre;
 import com.example.bookstorebe.repository.BookRepository;
 import com.example.bookstorebe.security.UserDetailsImpl;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Predicate;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service

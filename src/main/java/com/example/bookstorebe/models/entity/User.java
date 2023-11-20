@@ -28,7 +28,6 @@ public class User {
 
     public User(Integer id, String name, String email, String password, UserRole role) {
     }
-
     public void setAvatar(String avatarName) {
         this.avatar = avatarName;
     }
@@ -84,6 +83,5 @@ public class User {
     public void removeFromFavorites(Book book) {
         favorites.remove(book);
     }
-    
-    
+
 }
