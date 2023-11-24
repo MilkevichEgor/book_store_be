@@ -2,15 +2,17 @@ package com.example.bookstorebe.security.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-import lombok.Getter;
 
+/**
+ * Request object for login.
+ */
 @Data
 public class LoginRequest {
 
-    @NotBlank
-    private String email;
+  @NotBlank
+  private String email;
 
-    @NotBlank
-    private String password;
+  @NotBlank
+  private String password;
 
 }

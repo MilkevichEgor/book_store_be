@@ -4,20 +4,16 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.util.stream.Stream;
-
+/**
+ * Interface for managing file storage.
+ */
 @Service
 public interface FilesStorageService {
-    public void init();
+  public void init();
 
-    public void save(MultipartFile file);
+  public Resource load(String filename);
 
-    public Resource load(String filename);
+  public void save(MultipartFile file);
 
-    public void deleteAll();
-
-    public Stream<Path> loadAll();
-
-    boolean doesAvatarExist(String originalFilename);
+  boolean doesAvatarExist(String originalFilename);
 }

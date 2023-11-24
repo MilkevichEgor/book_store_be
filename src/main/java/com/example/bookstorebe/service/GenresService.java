@@ -1,27 +1,44 @@
 package com.example.bookstorebe.service;
 
+import com.example.bookstorebe.dto.GenreDto;
 import com.example.bookstorebe.models.entity.Genre;
 import com.example.bookstorebe.repository.GenreRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * Service class for managing genres.
+ */
 @Service
-public class GenresService {
+public class GenresService implements IGenresService {
 
-    private final GenreRepository genreRepository;
+  private final GenreRepository genreRepository;
 
-    public GenresService(GenreRepository genreRepository) {
-        this.genreRepository = genreRepository;
-    }
+  public GenresService(GenreRepository genreRepository) {
+    this.genreRepository = genreRepository;
+  }
 
-    public ResponseEntity<Map<String, Object>> getAllGenres() {
-        Iterable<Genre> genres = genreRepository.findAll();
-        Map<String, Object> genre = new HashMap<>();
-        genre.put("genres", genres);
-        return new ResponseEntity<>(genre, HttpStatus.OK);
-    }
+  /**
+   * Retrieves all genres from the genre repository.
+   *
+   * @return A ResponseEntity containing a map of genres and an HTTP status code.
+   */
+  public List<GenreDto> getAllGenres() {
+
+    return toDto(genreRepository.findAll());
+  }
+
+  public GenreDto toDto(Genre genre) {
+    return new GenreDto(
+            genre.getGenreId(),
+            genre.getName()
+    );
+  }
+
+  public List<GenreDto> toDto(List<Genre> genres) {
+    List<GenreDto> dtos = new ArrayList<>();
+    genres.forEach(genre -> dtos.add(toDto(genre)));
+    return dtos;
+  }
 }
