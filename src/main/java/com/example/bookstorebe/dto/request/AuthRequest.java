@@ -1,4 +1,4 @@
-package com.example.bookstorebe.security.requests;
+package com.example.bookstorebe.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.Data;
  * Request object for login.
  */
 @Data
-public class LoginRequest {
+public class AuthRequest {
 
   @NotBlank
   private String email;

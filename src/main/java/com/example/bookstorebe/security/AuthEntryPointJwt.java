@@ -1,4 +1,4 @@
-package com.example.bookstorebe.security.jwt;
+package com.example.bookstorebe.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -37,7 +37,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
                        AuthenticationException authException)
 
           throws IOException, ServletException {
-    logger.error("Unauthorized error: {}", authException.getMessage());
+    logger.error("Unauthorized error:", authException.getMessage());
 
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

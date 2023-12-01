@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,22 +44,22 @@ public class Book {
   private String description;
   private Float averageRate;
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "book_genres_genre",
           joinColumns = @JoinColumn(name = "book_id"),
           inverseJoinColumns = @JoinColumn(name = "genre_id"))
   private List<Genre> genres;
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "book_users_id",
           joinColumns = @JoinColumn(name = "book_id"),
           inverseJoinColumns = @JoinColumn(name = "user_id"))
   private Set<User> users;
 
-  @OneToMany(mappedBy = "book")
+  @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
   @JsonManagedReference
   private List<Comment> comments;
 
-  @OneToMany(mappedBy = "book")
+  @OneToMany(mappedBy = "book", fetch = FetchType.EAGER)
   private List<Rating> ratings;
 }

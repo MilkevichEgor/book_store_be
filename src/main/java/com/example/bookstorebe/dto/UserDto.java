@@ -15,7 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * User details implementation.
+ * Represents a user data transfer object.
  */
 @Data
 @AllArgsConstructor
@@ -43,6 +43,14 @@ public class UserDto implements UserDetails {
     this.email = email;
     this.password = password;
     this.role = roleName;
+  }
+
+  /**
+   * Constructor.
+   */
+  public UserDto(String email, String password) {
+    this.email = email;
+    this.password = password;
   }
 
   /**

@@ -1,6 +1,6 @@
 package com.example.bookstorebe.service;
 
-import com.example.bookstorebe.security.jwt.JwtUtils;
+import com.example.bookstorebe.security.JwtUtils;
 import io.socket.socketio.server.SocketIoNamespace;
 import io.socket.socketio.server.SocketIoSocket;
 import java.util.HashMap;
@@ -29,12 +29,23 @@ public class SocketService {
   private final Map<String, SocketIoSocket> sockets = new HashMap<>();
 
 
+  /**
+   * Adds a socket to the sockets map.
+   *
+   * @param token  The token used to identify the user.
+   * @param socket The SocketIoSocket object to be added.
+   */
   public void addSocket(String token, SocketIoSocket socket) {
 
     String userEmail = jwtUtils.getUserNameFromJwtToken(token);
     sockets.put(userEmail, socket);
   }
 
+  /**
+   * Removes a socket from the sockets map based on the provided token.
+   *
+   * @param socket The SocketIoSocket object to remove.
+   */
   public void removeSocket(SocketIoSocket socket) {
     String tokenToRemove = socket.getInitialQuery().get("token");
 

@@ -1,4 +1,4 @@
-package com.example.bookstorebe.security.jwt;
+package com.example.bookstorebe.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;

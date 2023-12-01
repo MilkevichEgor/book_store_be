@@ -1,6 +1,7 @@
 package com.example.bookstorebe.service;
 
 import com.example.bookstorebe.dto.BookDto;
+import com.example.bookstorebe.dto.web.BookWebDto;
 import com.example.bookstorebe.models.entity.Book;
 import java.util.List;
 
@@ -34,6 +35,8 @@ public interface IBookService {
   List<BookDto> getFavorites(Long userId);
 
   BookDto toDto(Book book, boolean attachList);
+
+  BookWebDto toWebDto(BookDto dto);
 
   Book toEntity(BookDto book);
 

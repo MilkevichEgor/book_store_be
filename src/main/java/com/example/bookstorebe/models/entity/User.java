@@ -9,6 +9,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -56,13 +57,13 @@ public class User {
 
   private String avatar;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<Rating> ratings;
 
-  @OneToMany(mappedBy = "user")
+  @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
   private List<Comment> comments;
 
-  @ManyToMany(cascade = {CascadeType.ALL})
+  @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
   @JoinTable(name = "book_users_id",
           joinColumns = @JoinColumn(name = "user_id"),
           inverseJoinColumns = @JoinColumn(name = "book_id"))

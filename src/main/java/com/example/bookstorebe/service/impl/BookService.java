@@ -5,13 +5,14 @@ import com.example.bookstorebe.dto.CommentDto;
 import com.example.bookstorebe.dto.GenreDto;
 import com.example.bookstorebe.dto.RatingDto;
 import com.example.bookstorebe.dto.UserDto;
+import com.example.bookstorebe.dto.web.BookWebDto;
 import com.example.bookstorebe.models.entity.Book;
 import com.example.bookstorebe.models.entity.User;
 import com.example.bookstorebe.repository.BookRepository;
 import com.example.bookstorebe.repository.UserRepository;
-import com.example.bookstorebe.service.CommentService;
-import com.example.bookstorebe.service.GenresService;
 import com.example.bookstorebe.service.IBookService;
+import com.example.bookstorebe.service.ICommentService;
+import com.example.bookstorebe.service.IGenresService;
 import com.example.bookstorebe.service.IUserService;
 import com.example.bookstorebe.service.RatingService;
 import java.util.ArrayList;
@@ -26,26 +27,35 @@ import org.springframework.stereotype.Service;
 @Service
 public class BookService implements IBookService {
 
-  private final BookRepository bookRepository;
-  private final UserRepository userRepository;
+  @Autowired
+  private BookRepository bookRepository;
+  @Autowired
+  private UserRepository userRepository;
   @Autowired
   private IUserService userService;
-  private final GenresService genresService;
-  private final RatingService ratingService;
-  private final CommentService commentService;
-
   @Autowired
-  public BookService(BookRepository bookRepository,
-                     UserRepository userRepository,
-                     GenresService genresService,
-                     RatingService ratingService,
-                     CommentService commentService) {
-    this.bookRepository = bookRepository;
-    this.userRepository = userRepository;
-    this.genresService = genresService;
-    this.ratingService = ratingService;
-    this.commentService = commentService;
-  }
+  private IGenresService genresService;
+  @Autowired
+  private RatingService ratingService;
+  @Autowired
+  private ICommentService commentService;
+
+
+//  /**
+//   * Constructor for the BookService.
+//   */
+//  @Autowired
+//  public BookService(BookRepository bookRepository,
+//                     UserRepository userRepository,
+//                     GenresService genresService,
+//                     RatingService ratingService,
+//                     CommentService commentService) {
+//    this.bookRepository = bookRepository;
+//    this.userRepository = userRepository;
+//    this.genresService = genresService;
+//    this.ratingService = ratingService;
+//    this.commentService = commentService;
+//  }
 
   /**
    * Retrieves all books from the book repository.
@@ -53,8 +63,7 @@ public class BookService implements IBookService {
    * @return The list of books.
    */
   public List<BookDto> getAllBooks() {
-
-    return toDto(bookRepository.findAll());
+    return toDto(bookRepository.findAll(), true);
   }
 
   /**
@@ -65,7 +74,8 @@ public class BookService implements IBookService {
    * @return The response entity containing the book information.
    */
   public BookDto getOneBook(Long id) {
-    return toDto(bookRepository.findById(id).get(), true);
+    Book book = bookRepository.findById(id).get();
+    return toDto(book, true);
   }
 
   /**
@@ -75,21 +85,30 @@ public class BookService implements IBookService {
    * @return the list of favorite books
    */
   public List<BookDto> getFavorites(Long userId) {
-
     User user = userRepository.findById(userId).get();
 
-    return toDto(user.getFavorites());
+    return toDto(user.getFavorites(), false);
   }
 
+  /**
+   * Converts a Book object to a BookDto object.
+   *
+   * @param book       The Book object to convert.
+   * @param attachList Flag indicating whether to attach the lists of associated objects.
+   * @return The converted BookDto object.
+   */
   public BookDto toDto(Book book, boolean attachList) {
+    if (book == null) {
+      return null;
+    }
     List<UserDto> users = new ArrayList<>();
     List<GenreDto> genres = new ArrayList<>();
     List<RatingDto> ratings = new ArrayList<>();
     List<CommentDto> comments = new ArrayList<>();
     if (attachList) {
-      book.getUsers().forEach(user -> users.add(userService.toDto(user, false)));
+      book.getUsers().forEach(user -> users.add(userService.toDto(user, attachList)));
       book.getGenres().forEach(genre -> genres.add(genresService.toDto(genre)));
-      book.getRatings().forEach(rating -> ratings.add(ratingService.toDto(rating)));
+      book.getRatings().forEach(rating -> ratings.add(ratingService.toDto(rating, attachList)));
       book.getComments().forEach(comment -> comments.add(commentService.toDto(comment)));
     }
     return new BookDto(
@@ -109,10 +128,22 @@ public class BookService implements IBookService {
     );
   }
 
-  public List<BookDto> toDto(Collection<Book> books) {
+  /**
+   * Converts a collection of Book objects to a list of BookDto objects.
+   *
+   * @param books      the collection of Book objects to convert
+   * @param attachList
+   * @return a list of BookDto objects
+   */
+  public List<BookDto> toDto(Collection<Book> books, boolean attachList) {
     List<BookDto> bookDto = new ArrayList<>();
-    books.forEach(book -> bookDto.add(toDto(book, true)));
+    books.forEach(book -> bookDto.add(toDto(book, attachList)));
     return bookDto;
+  }
+
+  @Override
+  public BookWebDto toWebDto(BookDto dto) {
+    return new BookWebDto(dto);
   }
 
   @Override

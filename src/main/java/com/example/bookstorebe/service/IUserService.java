@@ -13,8 +13,8 @@ public interface IUserService {
    * Registers a new user.
    *
    * @param userDto The signup request containing user details.
-   * @return ResponseEntity containing a success message if the user is registered successfully,
-   * or a bad request message if there is an error.
+   * @return The user DTO object representing the newly registered user.
+   * @throws RuntimeException if there is an error during user registration.
    */
   UserDto save(UserDto userDto) throws RuntimeException;
 

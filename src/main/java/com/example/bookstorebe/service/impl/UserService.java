@@ -8,7 +8,7 @@ import com.example.bookstorebe.models.entity.Book;
 import com.example.bookstorebe.models.entity.User;
 import com.example.bookstorebe.repository.BookRepository;
 import com.example.bookstorebe.repository.UserRepository;
-import com.example.bookstorebe.security.jwt.JwtUtils;
+import com.example.bookstorebe.security.JwtUtils;
 import com.example.bookstorebe.service.FilesStorageService;
 import com.example.bookstorebe.service.IBookService;
 import com.example.bookstorebe.service.IUserService;
@@ -46,6 +46,9 @@ public class UserService implements IUserService {
 
   private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
+  /**
+   * Constructor for UserService.
+   */
   @Autowired
   public UserService(UserRepository userRepository,
                      PasswordEncoder encoder,
@@ -64,9 +67,10 @@ public class UserService implements IUserService {
    * Registers a new user.
    *
    * @param userDto The signup request containing user details.
-   * @return ResponseEntity containing a success message if the user is registered successfully,
-   * or a bad request message if there is an error.
+   * @return The user DTO object representing the newly registered user.
+   * @throws RuntimeException if the provided email already exists in the database.
    */
+  @Transactional
   public UserDto save(UserDto userDto) throws RuntimeException {
     if (userRepository.existsByEmail(userDto.getEmail())) {
       logger.error("Email {} already exists", userDto.getEmail());
@@ -79,7 +83,7 @@ public class UserService implements IUserService {
     user.setName(userDto.getUsername());
     user.setRole(UserRole.ROLE_USER);
 
-    return toDto(userRepository.save(user), true);
+    return toDto(userRepository.save(user), false);
   }
 
   /**
@@ -110,6 +114,7 @@ public class UserService implements IUserService {
    * @param userId the ID of the user to be updated
    * @return the response entity with the updated user information
    */
+  @Transactional
   public UserDto updateAvatar(MultipartFile avatar,
                               Long userId) {
 
@@ -143,16 +148,12 @@ public class UserService implements IUserService {
    * @return The response entity containing the user's updated favorites list.
    */
   @Transactional
-  public UserDto addToFavorites(Long bookId,
-                                Long userId) {
+  public UserDto addToFavorites(Long bookId, Long userId) {
 
     Book book = bookRepository.findById(bookId).get();
     User user = userRepository.findById(userId).get();
 
-    book.getUsers().add(user);
     user.getFavorites().add(book);
-
-    bookRepository.save(book);
 
     return toDto(userRepository.save(user), true);
   }
@@ -178,12 +179,19 @@ public class UserService implements IUserService {
     return result;
   }
 
+  /**
+   * Converts a User object to a UserDto object.
+   *
+   * @param user        the User object to be converted
+   * @param attachLists boolean flag indicating whether to attach lists or not
+   * @return the converted UserDto object
+   */
   public UserDto toDto(User user, boolean attachLists) {
 
     List<RatingDto> ratings = new ArrayList<>();
     List<BookDto> favorites = new ArrayList<>();
     if (attachLists) {
-      user.getRatings().forEach(rating -> ratings.add(ratingService.toDto(rating)));
+      user.getRatings().forEach(rating -> ratings.add(ratingService.toDto(rating, false)));
       user.getFavorites().forEach(book -> favorites.add(bookService.toDto(book, false)));
     }
     return new UserDto(

@@ -1,8 +1,9 @@
 package com.example.bookstorebe.controllers;
 
 import com.example.bookstorebe.dto.UserDto;
-import com.example.bookstorebe.dto.response.UserResponse;
+import com.example.bookstorebe.dto.response.OneFieldResponse;
 import com.example.bookstorebe.service.impl.UserService;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * REST controller for user-related operations.
+ */
 @RestController
 @RequestMapping("/user")
 public class UserRestController {
@@ -33,7 +37,7 @@ public class UserRestController {
    */
 
   @GetMapping("/me")
-  public ResponseEntity<UserResponse> getCurrentUser(Authentication authentication) {
+  public ResponseEntity<Map<String, UserDto>> getCurrentUser(Authentication authentication) {
     Long userId = ((UserDto) authentication.getPrincipal()).getId();
     UserDto userDto;
 
@@ -43,7 +47,7 @@ public class UserRestController {
     } catch (Exception e) {
       return ResponseEntity.internalServerError().body(null);
     }
-    return ResponseEntity.ok(new UserResponse(userDto));
+    return ResponseEntity.ok(OneFieldResponse.of("user", userDto));
   }
 
   /**
@@ -72,7 +76,7 @@ public class UserRestController {
     try {
       return ResponseEntity.ok().body(userService.updateAvatar(avatar, user.getId()));
     } catch (Exception e) {
-      return ResponseEntity.badRequest().body(null);
+      return ResponseEntity.internalServerError().body(null);
     }
   }
 }

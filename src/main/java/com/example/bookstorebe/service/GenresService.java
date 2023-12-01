@@ -29,6 +29,11 @@ public class GenresService implements IGenresService {
     return toDto(genreRepository.findAll());
   }
 
+  /**
+   * Converts a Genre object to a GenreDto object.
+   *
+   * @return a GenreDto object.
+   */
   public GenreDto toDto(Genre genre) {
     return new GenreDto(
             genre.getGenreId(),
@@ -36,6 +41,12 @@ public class GenresService implements IGenresService {
     );
   }
 
+  /**
+   * Converts a list of Genre objects to a list of GenreDto objects.
+   *
+   * @param genres The list of Genre objects to convert.
+   * @return The list of GenreDto objects.
+   */
   public List<GenreDto> toDto(List<Genre> genres) {
     List<GenreDto> dtos = new ArrayList<>();
     genres.forEach(genre -> dtos.add(toDto(genre)));

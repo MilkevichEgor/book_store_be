@@ -1,10 +1,10 @@
 package com.example.bookstorebe.controllers;
 
 import com.example.bookstorebe.dto.UserDto;
+import com.example.bookstorebe.dto.request.AuthRequest;
 import com.example.bookstorebe.dto.response.JwtResponse;
 import com.example.bookstorebe.dto.response.MessageResponse;
-import com.example.bookstorebe.security.jwt.JwtUtils;
-import com.example.bookstorebe.security.requests.LoginRequest;
+import com.example.bookstorebe.security.JwtUtils;
 import com.example.bookstorebe.service.IUserService;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Authentication controller.
+ *
+ * @author Egor Milkevich
  */
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthRestController {
 
   private final JwtUtils jwtUtils;
   @Autowired
@@ -35,22 +37,22 @@ public class AuthController {
    * Constructor.
    */
   @Autowired
-  public AuthController(JwtUtils jwtUtils) {
+  public AuthRestController(JwtUtils jwtUtils) {
     this.jwtUtils = jwtUtils;
   }
 
   /**
    * Registers a user for signup.
    *
-   * @param userDto the signup request object containing user details
+   * @param request the signup request object containing user details
    * @return a ResponseEntity object containing the response
    */
 
   @PostMapping("/signup")
-  public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody UserDto userDto) {
+  public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody AuthRequest request) {
 
     try {
-      userService.save(userDto);
+      userService.save(new UserDto(request.getEmail(), request.getPassword()));
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: " + e.getMessage()));
     }
@@ -58,15 +60,21 @@ public class AuthController {
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 
+  /**
+   * Sign in endpoint for the API.
+   *
+   * @param authRequest The login request object containing the user's email and password.
+   * @return The ResponseEntity containing the JwtResponse with the user's details and tokens.
+   */
   @PostMapping("/signin")
-  public ResponseEntity<JwtResponse> signin(@RequestBody LoginRequest loginRequest) {
+  public ResponseEntity<JwtResponse> signin(@RequestBody AuthRequest authRequest) {
 
     UserDto user;
     String jwt;
     String refreshToken;
 
     try {
-      user = userService.findByEmail(loginRequest.getEmail());
+      user = userService.findByEmail(authRequest.getEmail());
 
       Authentication authentication = new UsernamePasswordAuthenticationToken(
               user.getEmail(), user.getPassword(), new ArrayList<>());
@@ -76,7 +84,7 @@ public class AuthController {
       refreshToken = "42";
 
     } catch (Exception e) {
-      return ResponseEntity.badRequest().body(null);
+      return ResponseEntity.internalServerError().body(null);
     }
     return ResponseEntity.ok(new JwtResponse(user, jwt, refreshToken, "You are signed in"));
   }

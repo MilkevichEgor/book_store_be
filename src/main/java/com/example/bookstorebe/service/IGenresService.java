@@ -4,6 +4,9 @@ import com.example.bookstorebe.dto.GenreDto;
 import com.example.bookstorebe.models.entity.Genre;
 import java.util.List;
 
+/**
+ * Service interface for managing genres.
+ */
 public interface IGenresService {
 
   /**

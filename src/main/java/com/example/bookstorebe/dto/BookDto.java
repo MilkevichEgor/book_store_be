@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a data transfer object for a book.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

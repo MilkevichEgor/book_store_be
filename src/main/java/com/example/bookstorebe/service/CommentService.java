@@ -13,32 +13,23 @@ import org.springframework.stereotype.Service;
  * This service class handles operations related to comments on books.
  */
 @Service
-public class CommentService {
+public class CommentService implements ICommentService {
 
-  private final BookRepository bookRepository;
-  private final CommentRepository commentRepository;
-  private final UserRepository userRepository;
-  private final SocketService socketService;
-
-  /**
-   * Constructor for CommentService.
-   */
   @Autowired
-  public CommentService(BookRepository bookRepository,
-                        CommentRepository commentRepository,
-                        UserRepository userRepository,
-                        SocketService socketService) {
-    this.bookRepository = bookRepository;
-    this.commentRepository = commentRepository;
-    this.userRepository = userRepository;
-    this.socketService = socketService;
-  }
+  private BookRepository bookRepository;
+  @Autowired
+  private CommentRepository commentRepository;
+  @Autowired
+  private UserRepository userRepository;
+  @Autowired
+  private SocketService socketService;
 
   /**
    * Adds a comment to a book.
    *
    * @return a ResponseEntity containing the added comment
    */
+  @Override
   public CommentDto add(CommentDto request) throws Exception {
     Comment comment = toEntity(request);
     comment.setDate(new Date());
@@ -49,6 +40,13 @@ public class CommentService {
     return toDto(result);
   }
 
+  /**
+   * Converts a Comment object to a CommentDto object.
+   *
+   * @param comment The Comment object to convert.
+   * @return The converted CommentDto object.
+   */
+  @Override
   public CommentDto toDto(Comment comment) {
     return new CommentDto(
             comment.getCommentId(),
@@ -59,7 +57,8 @@ public class CommentService {
     );
   }
 
-  Comment toEntity(CommentDto commentDto) {
+  @Override
+  public Comment toEntity(CommentDto commentDto) {
     return new Comment(
             commentDto.getCommentId(),
             commentDto.getDate(),
