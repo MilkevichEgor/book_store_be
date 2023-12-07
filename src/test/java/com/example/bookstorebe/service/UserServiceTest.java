@@ -1,7 +1,7 @@
 package com.example.bookstorebe.service;
 
 import com.example.bookstorebe.constant.UserRole;
-import com.example.bookstorebe.dto.BookDto;
+import com.example.bookstorebe.dto.UserDto;
 import com.example.bookstorebe.models.entity.Book;
 import com.example.bookstorebe.models.entity.User;
 import com.example.bookstorebe.repository.BookRepository;
@@ -17,16 +17,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(classes = {IBookService.class, BookRepository.class, UserRepository.class})
+@SpringBootTest(classes = {IUserService.class, BookRepository.class, UserRepository.class})
 @ComponentScan(basePackages = {"com.example.bookstorebe"})
 @TestPropertySource(locations = "classpath:application-test.properties")
 @EnableConfigurationProperties
 @ActiveProfiles("test")
-class BookServiceTest {
+public class UserServiceTest {
 
   @Autowired
   private BookRepository bookRepository;
@@ -35,8 +38,10 @@ class BookServiceTest {
   private UserRepository userRepository;
 
   @Autowired
-  private IBookService bookService;
+  private IUserService userService;
 
+  @Autowired
+  private PasswordEncoder encoder;
 
   @BeforeEach
   void setup() {
@@ -87,62 +92,93 @@ class BookServiceTest {
 
   @Test
   @DirtiesContext
-  void getOneBookTest() {
-    Long id = 1L;
-    BookDto bookDto = bookService.getOneBook(id);
-    Assertions.assertEquals(id, bookDto.getBookId());
+  void saveUserTest() {
+
+    UserDto userDto = new UserDto();
+    userDto.setEmail("test@example.com");
+    userDto.setName("test");
+    userDto.setPassword("test");
+    userDto.setRole(UserRole.ROLE_USER);
+
+    UserDto savedUser = userService.save(userDto);
+
+    Assertions.assertEquals("test@example.com", savedUser.getEmail());
+    Assertions.assertEquals(UserRole.ROLE_USER, savedUser.getRole());
+    Assertions.assertTrue(encoder.matches("test", savedUser.getPassword()));
   }
 
   @Test
   @DirtiesContext
-  void getOneBookEmptyTest() {
-    Long id = 5L;
-    BookDto bookDto = bookService.getOneBook(id);
-    Assertions.assertNull(bookDto);
-  }
+  void getCurrentUserTest() {
 
-  @Test
-  @DirtiesContext
-  void getAllBooksTest() {
-    List<BookDto> books = bookService.getAllBooks();
-    Assertions.assertEquals(2, books.size());
-  }
-
-  @Test
-  @DirtiesContext
-  void getFavoritesTest() {
     Long userId = 1L;
-    List<BookDto> books = bookService.getFavorites(userId);
-    Assertions.assertEquals(2, books.size());
+    UserDto userDto = userService.getCurrentUser(userId);
+    Assertions.assertEquals("Email 1", userDto.getEmail());
+    Assertions.assertEquals("Name 1", userDto.getName());
+    Assertions.assertEquals(UserRole.ROLE_USER, userDto.getRole());
+  }
+
+  @Test
+  @DirtiesContext
+  void updateAvatarTest() {
+    Long userId = 1L;
+
+    MockMultipartFile avatar = new MockMultipartFile(
+            "file", "test.png", MediaType.MULTIPART_FORM_DATA_VALUE, "test".getBytes());
+
+    UserDto userDto = userService.updateAvatar(avatar, userId);
 
   }
 
   @Test
   @DirtiesContext
-  void getFavoritesEmptyTest() {
+  void addFavoriteTest() {
+
     Long userId = 2L;
-    List<BookDto> books = bookService.getFavorites(userId);
-    Assertions.assertEquals(0, books.size());
+    Long bookId = 1L;
+
+    UserDto userDto = userService.addToFavorites(bookId, userId);
+
+    Assertions.assertEquals(1, userDto.getFavorites().size());
+    Assertions.assertEquals("Book 1", userDto.getFavorites().get(0).getTitle());
+  }
+
+  @Test
+  @DirtiesContext
+  void removeFavoriteTest() throws Exception {
+
+    Long userId = 1L;
+    Long bookId = 1L;
+
+    UserDto userDto = userService.removeFromFavorites(bookId, userId);
+
+    Assertions.assertEquals(1, userDto.getFavorites().size());
+
   }
 
   @Test
   @DirtiesContext
   void toDtoTest() {
-    Long id = 1L;
-    Book book = bookRepository.findById(id).get();
 
-    BookDto bookDto = bookService.toDto(book, true);
+    User user = userRepository.findById(1L).get();
+    UserDto userDto = userService.toDto(user, true);
 
-    Assertions.assertEquals(id, bookDto.getBookId());
-
-    Assertions.assertEquals("Book 1", bookDto.getTitle());
-    Assertions.assertEquals("Author 1", bookDto.getAuthor());
-    Assertions.assertEquals(30, bookDto.getPrice());
-    Assertions.assertEquals(bookDto.getUsers().size(), 1);
-    Assertions.assertEquals(bookDto.getComments().size(), 0);
-    Assertions.assertEquals(bookDto.getRatings().size(), 0);
-    Assertions.assertEquals(bookDto.getGenres().size(), 0);
+    Assertions.assertEquals("Email 1", userDto.getEmail());
+    Assertions.assertEquals("Name 1", userDto.getName());
+    Assertions.assertEquals(UserRole.ROLE_USER, userDto.getRole());
+    Assertions.assertEquals(2, userDto.getFavorites().size());
   }
 
+  @Test
+  @DirtiesContext
+  void findByEmailTest() {
+    String email = "Email 1";
+
+    UserDto userDto = userService.findByEmail(email);
+
+    Assertions.assertEquals("Email 1", userDto.getEmail());
+    Assertions.assertEquals("Name 1", userDto.getName());
+    Assertions.assertEquals(UserRole.ROLE_USER, userDto.getRole());
+  }
 
 }

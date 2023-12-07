@@ -89,19 +89,25 @@ public class WebSecurityConfig {
    */
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.
-            csrf(AbstractHttpConfigurer::disable)
+    http
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(withCustomConfiguration())
-            .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .exceptionHandling(exception ->
+                    exception.authenticationEntryPoint(unauthorizedHandler))
+            .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize ->
                     authorize
                             .requestMatchers("/auth/**").permitAll()
                             .requestMatchers("/test/**").permitAll()
                             .requestMatchers("/user/me").permitAll()
+                            .requestMatchers("/book/all").permitAll()
+                            .requestMatchers("/book/genres").permitAll()
                             .requestMatchers("/uploads/**").permitAll()
-                            .anyRequest().authenticated()
-            );
+                            .requestMatchers("/swagger-ui/**").permitAll()
+                            .requestMatchers("/milkevich-documentation/**").permitAll()
+                            .requestMatchers("/milkevich-api-docs/**").permitAll()
+                            .anyRequest().authenticated());
 
     http.authenticationProvider(authenticationProvider());
 
@@ -116,6 +122,9 @@ public class WebSecurityConfig {
     return cors -> cors.configurationSource(corsConfigurationSource());
   }
 
+  /**
+   * Configures the CORS configuration for the application.
+   */
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();

@@ -19,8 +19,17 @@ public class BookStoreBeApplication implements CommandLineRunner {
   @Resource
   SocketEmitter socketEmitter;
 
+  /**
+   * Main method.
+   *
+   * @param args The command line arguments
+   */
   public static void main(String[] args) {
-    SpringApplication.run(BookStoreBeApplication.class, args);
+    SpringApplication application = new SpringApplication(BookStoreBeApplication.class);
+    application.setAdditionalProfiles("dev");
+    application.run(args);
+
+
   }
 
   @Override

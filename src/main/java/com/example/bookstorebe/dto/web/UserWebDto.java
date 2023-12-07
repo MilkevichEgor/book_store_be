@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Represents a data transfer object for front-end.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +23,11 @@ public class UserWebDto {
   private List<RatingDto> ratings;
   private List<BookWebDto> favorites;
 
+  /**
+   * Converts a UserDto object to a UserWebDto object.
+   *
+   * @param dto The UserDto object to convert.
+   */
   public UserWebDto(UserDto dto) {
     this.id = dto.getId();
     this.role = dto.getRole();

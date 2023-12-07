@@ -6,8 +6,17 @@ import com.example.bookstorebe.dto.response.JwtResponse;
 import com.example.bookstorebe.dto.response.MessageResponse;
 import com.example.bookstorebe.security.JwtUtils;
 import com.example.bookstorebe.service.IUserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +34,8 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Egor Milkevich
  */
+@Tag(name = "Auth", description = "Authentication API")
+@Slf4j
 @RestController
 @RequestMapping("/auth")
 public class AuthRestController {
@@ -47,7 +58,17 @@ public class AuthRestController {
    * @param request the signup request object containing user details
    * @return a ResponseEntity object containing the response
    */
-
+  @Operation(summary = "Register a new user",
+          description = "Registers a new user with the provided email and password.",
+          tags = "Auth")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "User registered successfully",
+                  content = @Content(schema = @Schema(implementation
+                          = MessageResponse.class), mediaType = "application/json")),
+          @ApiResponse(responseCode = "400", description = "Error: Bad request, please check the request and try again",
+                  content = @Content(schema = @Schema(implementation
+                          = MessageResponse.class), mediaType = "application/json")),
+  })
   @PostMapping("/signup")
   public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody AuthRequest request) {
 
@@ -56,7 +77,6 @@ public class AuthRestController {
     } catch (Exception e) {
       return ResponseEntity.badRequest().body(new MessageResponse("Error: " + e.getMessage()));
     }
-
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 
@@ -66,6 +86,21 @@ public class AuthRestController {
    * @param authRequest The login request object containing the user's email and password.
    * @return The ResponseEntity containing the JwtResponse with the user's details and tokens.
    */
+  @Operation(summary = "Authenticate a user",
+          description = "Authenticate a user with the provided email and password.",
+          tags = "Auth")
+  @Parameters({
+          @Parameter(name = "email", description = "The email of the user"),
+          @Parameter(name = "password", description = "The password of the user")
+  })
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "User authenticated successfully",
+                  content = @Content(schema = @Schema(implementation = JwtResponse.class), mediaType = "application/json")),
+          @ApiResponse(responseCode = "400", description = "Error: Invalid credentials, please check the request",
+                  content = @Content(schema = @Schema(implementation = JwtResponse.class), mediaType = "application/json")),
+          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
+                  content = @Content(schema = @Schema()))
+  })
   @PostMapping("/signin")
   public ResponseEntity<JwtResponse> signin(@RequestBody AuthRequest authRequest) {
 
@@ -84,6 +119,7 @@ public class AuthRestController {
       refreshToken = "42";
 
     } catch (Exception e) {
+      log.error("Sign in API failed", e);
       return ResponseEntity.internalServerError().body(null);
     }
     return ResponseEntity.ok(new JwtResponse(user, jwt, refreshToken, "You are signed in"));
@@ -95,6 +131,15 @@ public class AuthRestController {
    * @param token the token to be checked
    * @return a ResponseEntity describing the token's validity and the corresponding HTTP status
    */
+  @Operation(summary = "Check token validity",
+          description = "Checks the validity of a token.",
+          tags = "Auth")
+  @ApiResponses({
+          @ApiResponse(responseCode = "200", description = "Token is valid",
+                  content = @Content(schema = @Schema(), mediaType = "application/json")),
+          @ApiResponse(responseCode = "401", description = "Token is invalid, please sign in",
+                  content = @Content(schema = @Schema(), mediaType = "application/json"))
+  })
   @PostMapping("/checkToken")
   public ResponseEntity<String> checkToken(@RequestParam String token) {
     if (jwtUtils.validateJwtToken(token)) {

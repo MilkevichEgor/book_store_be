@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Request object for creating a comment.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

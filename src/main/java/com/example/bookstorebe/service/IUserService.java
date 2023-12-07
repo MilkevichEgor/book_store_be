@@ -2,6 +2,7 @@ package com.example.bookstorebe.service;
 
 import com.example.bookstorebe.dto.UserDto;
 import com.example.bookstorebe.models.entity.User;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service class for managing users.
@@ -35,6 +36,8 @@ public interface IUserService {
    * @return The response entity containing the user's updated favorites list.
    */
   UserDto addToFavorites(Long bookId, Long userId);
+
+  UserDto updateAvatar(MultipartFile avatar, Long userId);
 
   /**
    * Removes a book from the user's favorites.

@@ -69,9 +69,6 @@ public class User {
           inverseJoinColumns = @JoinColumn(name = "book_id"))
   private Set<Book> favorites;
 
-  public User(Long id, String name, String email, String password, UserRole role) {
-  }
-
   /**
    * Compare two users by id.
    *

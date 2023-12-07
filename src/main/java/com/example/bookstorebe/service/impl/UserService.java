@@ -8,7 +8,6 @@ import com.example.bookstorebe.models.entity.Book;
 import com.example.bookstorebe.models.entity.User;
 import com.example.bookstorebe.repository.BookRepository;
 import com.example.bookstorebe.repository.UserRepository;
-import com.example.bookstorebe.security.JwtUtils;
 import com.example.bookstorebe.service.FilesStorageService;
 import com.example.bookstorebe.service.IBookService;
 import com.example.bookstorebe.service.IUserService;
@@ -22,6 +21,8 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +33,11 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
  * Service class for managing users.
  */
 @Service
+@EnableCaching
 public class UserService implements IUserService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder encoder;
-  private final JwtUtils jwtUtils;
   private final FilesStorageService storageService;
   private final RatingService ratingService;
   @Autowired
@@ -52,13 +53,10 @@ public class UserService implements IUserService {
   @Autowired
   public UserService(UserRepository userRepository,
                      PasswordEncoder encoder,
-                     JwtUtils jwtUtils,
                      FilesStorageService storageService,
-                     RatingService ratingService
-  ) {
+                     RatingService ratingService) {
     this.userRepository = userRepository;
     this.encoder = encoder;
-    this.jwtUtils = jwtUtils;
     this.storageService = storageService;
     this.ratingService = ratingService;
   }
@@ -206,6 +204,7 @@ public class UserService implements IUserService {
     );
   }
 
+  @Cacheable("users")
   @Override
   public UserDto findByEmail(String userEmail) {
     return toDto(userRepository.findByEmail(userEmail).get(), true);

@@ -1,0 +1,85 @@
+version: '3.8'
+services:
+
+  spring:
+    image: book-store-app:0.0.1
+    container_name: spring
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/fusiondb
+    networks:
+      - default
+
+  db:
+    image: postgres
+    container_name: postgres
+    environment:
+      POSTGRES_DB: fusiondb
+      POSTGRES_USER: egor
+      POSTGRES_PASSWORD: fusion
+    ports:
+      - "5433:5432"
+    networks:
+      - default
+
+  redis:
+    image: redis
+    hostname: redis
+    container_name: redis
+    ports:
+      - 6379:6379
+    networks:
+      - default
+
+networks:
+  default:
+    driver: bridge
+
+
+    # volumes:
+    #   - /home/fusion/works/billing-job/src/sql/:/mnt/:rw
+
+  # version: '3.8'
+  # services:
+  #   db:
+  #     image: postgres
+  #     container_name: postgres
+  #     environment:
+  #       POSTGRES_DB: fusiondb
+  #       POSTGRES_USER: egor
+  #       POSTGRES_PASSWORD: fusion
+  #     ports:
+  #       - "5433:5432"
+  #     volumes:
+  #       - /home/fusion/works/billing-job/src/sql/:/mnt/:rw
+
+  # version: '3.1'
+  # services:
+  #   db:
+  #     image: mysql
+  #     environment:
+  #       MYSQL_DATABASE: fusiondb
+  #       MYSQL_USER: egor
+  #       MYSQL_PASSWORD: fusion
+  #       MYSQL_ROOT_PASSWORD: fusion
+  #     ports:
+  #       - "3307:3306"
+
+  # rabbit-mq:
+  #   image: rabbitmq:3-management-alpine
+  #   hostname: rabbitmq
+  #   restart: always
+  #   container_name: rabbitmq
+  #   environment:
+  #     RABBITMQ_DEFAULT_USER: egor
+  #     RABBITMQ_DEFAULT_PASS: fusion
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"

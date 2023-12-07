@@ -18,12 +18,16 @@ import com.example.bookstorebe.service.RatingService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Service;
 
 /**
  * Service class for managing books.
  */
+@EnableCaching
 @Service
 public class BookService implements IBookService {
 
@@ -39,29 +43,13 @@ public class BookService implements IBookService {
   private RatingService ratingService;
   @Autowired
   private ICommentService commentService;
-
-
-//  /**
-//   * Constructor for the BookService.
-//   */
-//  @Autowired
-//  public BookService(BookRepository bookRepository,
-//                     UserRepository userRepository,
-//                     GenresService genresService,
-//                     RatingService ratingService,
-//                     CommentService commentService) {
-//    this.bookRepository = bookRepository;
-//    this.userRepository = userRepository;
-//    this.genresService = genresService;
-//    this.ratingService = ratingService;
-//    this.commentService = commentService;
-//  }
-
+  
   /**
    * Retrieves all books from the book repository.
    *
    * @return The list of books.
    */
+  @Cacheable("books")
   public List<BookDto> getAllBooks() {
     return toDto(bookRepository.findAll(), true);
   }
@@ -73,9 +61,10 @@ public class BookService implements IBookService {
    *           //   * @param userDetails The authenticated user details.
    * @return The response entity containing the book information.
    */
+  @Cacheable("book")
   public BookDto getOneBook(Long id) {
-    Book book = bookRepository.findById(id).get();
-    return toDto(book, true);
+    Optional<Book> book = bookRepository.findById(id);
+    return toDto(book.orElse(null), true);
   }
 
   /**
@@ -86,8 +75,8 @@ public class BookService implements IBookService {
    */
   public List<BookDto> getFavorites(Long userId) {
     User user = userRepository.findById(userId).get();
-
     return toDto(user.getFavorites(), false);
+
   }
 
   /**
@@ -132,7 +121,7 @@ public class BookService implements IBookService {
    * Converts a collection of Book objects to a list of BookDto objects.
    *
    * @param books      the collection of Book objects to convert
-   * @param attachList
+   * @param attachList flag indicating whether to attach the lists of associated objects
    * @return a list of BookDto objects
    */
   public List<BookDto> toDto(Collection<Book> books, boolean attachList) {
