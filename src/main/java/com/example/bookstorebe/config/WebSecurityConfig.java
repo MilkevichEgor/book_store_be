@@ -103,7 +103,7 @@ public class WebSecurityConfig {
                             .requestMatchers("/user/me").permitAll()
                             .requestMatchers("/book/all").permitAll()
                             .requestMatchers("/book/genres").permitAll()
-                            .requestMatchers("/uploads/**").permitAll()
+                            .requestMatchers("/resources/uploads/**").permitAll()
                             .requestMatchers("/swagger-ui/**").permitAll()
                             .requestMatchers("/milkevich-documentation/**").permitAll()
                             .requestMatchers("/milkevich-api-docs/**").permitAll()

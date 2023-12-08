@@ -28,12 +28,10 @@ public class BookStoreBeApplication implements CommandLineRunner {
     SpringApplication application = new SpringApplication(BookStoreBeApplication.class);
     application.setAdditionalProfiles("dev");
     application.run(args);
-
-
   }
 
   @Override
-  public void run(String... arg) throws Exception {
+  public void run(String... arg) {
     socketEmitter.socketStart();
     storageService.init();
   }

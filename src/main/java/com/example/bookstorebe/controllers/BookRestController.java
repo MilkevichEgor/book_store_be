@@ -70,14 +70,17 @@ public class BookRestController {
    * @return the response entity containing the added comment
    */
   @Operation(summary = "Adds a comment",
-          description = "Adds a new comment to a book")
+      description = "Adds a new comment to a book")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Comment added successfully",
-                  content = @Content(schema = @Schema(implementation = CommentWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "400", description = "Error: Bad request, please check the request and try again",
-                  content = @Content(schema = @Schema(implementation = CommentWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Comment added successfully",
+          content = @Content(schema = @Schema(implementation = CommentWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "400",
+          description = "Error: Bad request, please check the request and try again",
+          content = @Content(schema = @Schema(implementation = CommentWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @PostMapping("/add-comment")
   public ResponseEntity<CommentWebDto> addComment(@RequestBody CommentRequest request,
@@ -106,14 +109,17 @@ public class BookRestController {
    * @return The response entity containing the updated user information.
    */
   @Operation(summary = "Adds a book to favorites",
-          description = "Adds a book to the user's favorites")
+      description = "Adds a book to the user's favorites")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Book added to favorites successfully",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "400", description = "Error: Bad request, please check the request and try again",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Book added to favorites successfully",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "400",
+          description = "Error: Bad request, please check the request and try again",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @PostMapping("/add-favorites")
   public ResponseEntity<UserDto> addToFavorites(@RequestBody BookFavoriteRequest request,
@@ -142,14 +148,17 @@ public class BookRestController {
    * @return a ResponseEntity containing a UserResponse object
    */
   @Operation(summary = "Remove a book from favorites",
-          description = "Remove a book from the user's favorites")
+      description = "Remove a book from the user's favorites")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Book removed from favorites successfully",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "400", description = "Error: Bad request, please check the request and try again",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Book removed from favorites successfully",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "400",
+          description = "Error: Bad request, please check the request and try again",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @DeleteMapping("/remove-favorites")
   public ResponseEntity<UserDto> removeFromFavorites(@RequestBody BookFavoriteRequest request,
@@ -176,12 +185,14 @@ public class BookRestController {
    * @return A ResponseEntity containing a map of the books.
    */
   @Operation(summary = "Retrieve all books",
-          description = "Retrieve all books")
+      description = "Retrieve all books")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Books retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Books retrieved successfully",
+          content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @GetMapping(path = "/all")
   public ResponseEntity<Map<String, List<BookWebDto>>> getAllBooks() {
@@ -201,12 +212,14 @@ public class BookRestController {
    * @return the list of favorite books
    */
   @Operation(summary = "Retrieve favorite books",
-          description = "Retrieve favorite books")
+      description = "Retrieve favorite books")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Favorite books retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Favorite books retrieved successfully",
+          content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @GetMapping(path = "/favorites")
   public ResponseEntity<List<BookDto>> getFavorites(Authentication authentication) {
@@ -229,14 +242,17 @@ public class BookRestController {
    * @return The response entity containing the book information.
    */
   @Operation(summary = "Retrieve a book by ID",
-          description = "Retrieve a book by its ID")
+      description = "Retrieve a book by its ID")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Book retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "400", description = "Error: Bad request, please check the request and try again",
-                  content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Book retrieved successfully",
+          content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "400",
+          description = "Error: Bad request, please check the request and try again",
+          content = @Content(schema = @Schema(implementation = BookWebDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @GetMapping("/{id}")
   public ResponseEntity<Map<String, BookWebDto>> getOneBook(@PathVariable Long id,
@@ -257,12 +273,14 @@ public class BookRestController {
    * @return the response entity containing a map of genres
    */
   @Operation(summary = "Retrieve all genres",
-          description = "Retrieve all genres")
+      description = "Retrieve all genres")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "Genres retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = GenreDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, check connection with database, and try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "Genres retrieved successfully",
+          content = @Content(schema = @Schema(implementation = GenreDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, check connection with database, and try again",
+          content = @Content(schema = @Schema()))
   })
   @GetMapping(path = "/genres")
   public ResponseEntity<Map<String, List<GenreDto>>> getAllGenres() {

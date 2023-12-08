@@ -44,11 +44,15 @@ public class UserRestController {
    */
 
   @Operation(summary = "Get current user",
-          description = "Get current user information",
-          tags = "User")
+      description = "Get current user information",
+      tags = "User")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "User retrieved successfully", content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, please try again", content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200",
+          description = "User retrieved successfully",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500",
+          description = "Internal server error, please try again",
+          content = @Content(schema = @Schema()))
   })
   @GetMapping("/me")
   public ResponseEntity<Map<String, UserDto>> getCurrentUser(Authentication authentication) {
@@ -72,11 +76,12 @@ public class UserRestController {
    * @return The user object.
    */
   @Operation(summary = "Get user by ID",
-          description = "Get user by ID",
-          tags = "User")
+      description = "Get user by ID",
+      tags = "User")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "User retrieved successfully",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "200",
+          description = "User retrieved successfully",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
   })
   @GetMapping(path = "/getUser")
   public UserDto getById(@RequestParam Long userId) {
@@ -91,13 +96,13 @@ public class UserRestController {
    * @return description of return value
    */
   @Operation(summary = "Update avatar",
-          description = "Update user's avatar",
-          tags = "User")
+      description = "Update user's avatar",
+      tags = "User")
   @ApiResponses({
-          @ApiResponse(responseCode = "200", description = "User updated successfully",
-                  content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
-          @ApiResponse(responseCode = "500", description = "Internal server error, please try again",
-                  content = @Content(schema = @Schema()))
+      @ApiResponse(responseCode = "200", description = "User updated successfully",
+          content = @Content(schema = @Schema(implementation = UserDto.class), mediaType = "application/json")),
+      @ApiResponse(responseCode = "500", description = "Internal server error, please try again",
+          content = @Content(schema = @Schema()))
   })
   @PostMapping(value = "/upload-avatar", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   public ResponseEntity<UserDto> updateAvatar(@RequestParam("avatar") MultipartFile avatar,
